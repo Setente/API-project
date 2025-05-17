@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Travel Partner Dashboard</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  #post-area { margin-bottom: 20px; }
+  textarea { width: 100%; height: 80px; }
+  button { padding: 8px 16px; margin-top: 10px; }
+  .post { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<h2>FIND A TRAVEL PARTNER</h2>
+
+<h3>Post your travel need</h3>
+  <div id="post">
+    <textarea id="post-message" rows="4" cols="50" placeholder="Where are you going? What time?"></textarea><br/>
+    <button onclick="submitPost()">Post</button>
+  </div>

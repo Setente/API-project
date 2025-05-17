@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Student Registration</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  input { margin: 5px 0; width: 100%; padding: 8px; }
+  button { padding: 8px 16px; margin: 10px; }
+</style>
+</head>
+<body>
+
+<h2>Register Your Student Account</h2>
+<div class="container">
+  <label for="User Name">User Name:</label>
+  <input type="text" id="reg-username" placeholder="Username" required />
+  <label for="Student Number">Student Number:</label>
+  <input type="text" id="student-number" placeholder="Student Number" required />
+  <label for="Phone Number">Phone Number:</label>
+  <input type="text" id="phone-number" placeholder="Phone Number" required />
+  <button onclick="register()">Register</button>
+</div>
+
+<div id="verify-section" style="display:none; margin-top:20px;">
+  <h3>Verify Your Phone</h3>
+  <input type="text" id="verification-code" placeholder="Verification Code" required />
+  <button onclick="verify()">Verify</button>
+</div>
+
+<script>
+let usernameGlobal = '';
+
+function register() {
+  const username = document.getElementById('reg-username').value.trim();
+  const studentNumber = document.getElementById('student-number').value.trim();
+  const phoneNumber = document.getElementById('phone-number').value.trim();
+
+  if (!username || !studentNumber || !phoneNumber) {
+    alert('Please fill all fields.');
+    return;
+  }
+
+  fetch('http://localhost:3000/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, studentNumber, phoneNumber })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert('Verification code sent to your phone.');
+      document.getElementById('register-form').style.display = 'none';
+      document.getElementById('verify-section').style.display = 'block';
+      usernameGlobal = username;
+    } else {
+      alert('Registration failed: ' + data.message);
+    }
+  })
+  .catch(() => alert('Error connecting to server.'));
+}
+
+function verify() {
+  const code = document.getElementById('verification-code').value.trim();
+  if (!code) {
+    alert('Please enter the verification code.');
+    return;
+  }
+
+  fetch('http://localhost:3000/verify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username: usernameGlobal, code })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert('Verification successful! Proceed to the dashboard.');
+      // Save username for session (localStorage for demo)
+      localStorage.setItem('username', usernameGlobal);
+      // Redirect to dashboard
+      window.location.href = 'dashboard.html';
+    } else {
+      alert('Incorrect verification code.');
+    }
+  })
+  .catch(() => alert('Error connecting to server.'));
+}
+</script>
+
+</body>
+</html>
